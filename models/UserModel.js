@@ -1,0 +1,82 @@
+// Import mongoose to define schema and interact with MongoDB
+const mongoose = require('mongoose'); 
+
+/**
+ * User Schema Definition
+ * Defines validation rules and structure for user documents in MongoDB
+ */
+const userSchemaRules = {
+    // Unique user ID - must be provided and unique
+    id: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+    // User's full name - required field
+    name: {
+        type: String,
+        required: true
+    },
+
+    // User's email - must be unique and required
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+    // Password - must be at least 8 characters
+    password: {
+        type: String,
+        required: true,
+        minlength: 8
+    },
+
+    // Confirm password - must match password
+    confirmPassword: {
+        type: String,
+        required: true,
+        minlength: 8,
+        validate: function() {
+            // Custom validator to ensure password and confirmPassword match
+            return this.password === this.confirmPassword;
+        }
+    },
+
+    // Phone number - must be unique and exactly 10 digits
+    phoneNumber: {
+        type: String,
+        required: true,
+        unique: true,
+        maxlength: 10
+    },
+};
+
+//Create a Mongoose schema using the rules defined above
+const userSchema = new mongoose.Schema(userSchemaRules);
+
+//Import bcrypt to securely hash passwords before saving to the database
+const bcrypt = require("bcrypt");
+
+//Mongoose pre-save hook to hash the user's password
+userSchema.pre("save", async function(next) {
+  //Only hash the password if it has been modified (or is new)
+  if (!this.isModified("password")) return next();
+
+  //Hash the password with a cost factor of 12 (secure and performant)
+  this.password = await bcrypt.hash(this.password, 12);
+
+  //Remove confirmPassword before saving — it's only used for validation, not storage
+  this.confirmPassword = undefined;
+
+  next(); //Proceed to save the user
+});
+
+userSchema.index({ email: 1 }); // Index on email for faster queries
+
+// Create a model from the schema — this will interact with the "usermodels" collection
+const UserModel = mongoose.model("UserModel", userSchema);
+
+// Export the model to use in controllers and routes
+module.exports = UserModel;
