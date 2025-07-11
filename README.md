@@ -15,12 +15,16 @@ This project demonstrates a fully-featured RESTful API built using Node.js, Expr
 - Swagger/Postman documentation
 
 ---
+# Node.js RESTful API Project
+
+[View this project on GitHub]
+(https://github.com/KeerthiManthapuramNodeProjectSprint.git)
 
 ## Setup Instructions
 
 ### 1. Clone the repository
 ```bash
-git clone <your-repo-url>
+git clone <your-git-repository-url>
 cd <your-project-folder>
 
 -> Install dependencies:
