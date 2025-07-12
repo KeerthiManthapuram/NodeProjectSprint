@@ -73,8 +73,6 @@ userSchema.pre("save", async function(next) {
   next(); //Proceed to save the user
 });
 
-userSchema.index({ email: 1 }); // Index on email for faster queries
-
 // Create a model from the schema — this will interact with the "usermodels" collection
 const UserModel = mongoose.model("UserModel", userSchema);
 
